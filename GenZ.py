@@ -14,18 +14,14 @@ def create_floating_text():
         float_window = tk.Toplevel()
         float_window.overrideredirect(True)  # Sin bordes  
         float_window.wm_attributes("-topmost", True)  # Siempre encima  
-        float_window.wm_attributes("-alpha", 0.7)  # Ventana semi-transparente
+        float_window.wm_attributes("-alpha", 0.8)  # Ventana semi-transparente
 
+        # Hacer la ventana ocupando toda la pantalla  
+        float_window.geometry(f"{float_window.winfo_screenwidth()}x{float_window.winfo_screenheight()}")
+        
         # Crear la etiqueta con el texto "Infected by GenZ.exe"
-        label = tk.Label(float_window, text="Infected by GenZ.exe", font=("Arial", 24), fg="red", bg="black")
-        label.pack()
-
-        # Posicionar la ventana en una ubicación aleatoria  
-        screen_width = float_window.winfo_screenwidth()
-        screen_height = float_window.winfo_screenheight()
-        x = random.randint(0, screen_width - 300)
-        y = random.randint(0, screen_height - 50)
-        float_window.geometry(f"+{x}+{y}")
+        label = tk.Label(float_window, text="Infected by GenZ.exe", font=("Arial", 80), fg="black", bg="darkred")
+        label.pack(expand=True, fill=tk.BOTH)  # Llenar toda la ventana
 
         # Mantener la ventana flotante visible durante 35 segundos  
         float_window.after(35000, float_window.destroy)  # Desaparece después de 35 segundos
