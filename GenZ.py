@@ -27,8 +27,10 @@ def create_floating_text():
         y = random.randint(0, screen_height - 50)
         float_window.geometry(f"+{x}+{y}")
 
-        # Mantener la ventana flotante visible  
-        # Desaparece solo después del tiempo total  
+        # Mantener la ventana flotante visible durante 35 segundos  
+        float_window.after(35000, float_window.destroy)  # Desaparece después de 35 segundos
+
+        # Repetir la función  
         root.after(random.randint(300, 500), create_floating_text)  # Llama de nuevo aleatoriamente
 
 # Función para crear el efecto de agujero negro  
@@ -54,7 +56,7 @@ def black_hole_effect():
         effect_window.update()
         effect_window.after(50)
 
-    # Efecto de pantalla invertida  
+    # Efecto de pantalla invertida (mover la ventana)  
     for direction in range(20):  # Mover en 20 pasos  
         for dx, dy in [(-10, 0), (10, 0), (0, -10), (0, 10)]:  # Izquierda, derecha, arriba, abajo  
             effect_window.geometry(f"+{400 + dx * direction}+{300 + dy * direction}")
