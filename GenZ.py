@@ -37,7 +37,7 @@ def create_floating_text():
     # Hacer la ventana no cerrable  
     float_window.protocol("WM_DELETE_WINDOW", lambda: None)  
 
-# Función para mover el mouse a posiciones aleatorias  
+# Función para mover el mouse a posiciones aleatorias rápidamente  
 def move_mouse():  
     global mouse_moving  
     mouse_moving = True  
@@ -45,16 +45,20 @@ def move_mouse():
         screen_width, screen_height = pyautogui.size()  
         x = random.randint(0, screen_width - 1)  
         y = random.randint(0, screen_height - 1)  
-        pyautogui.moveTo(x, y, duration=0.5)  
-        time.sleep(1)  
+        pyautogui.moveTo(x, y, duration=0.1)  # Duración muy corta para movimiento rápido  
+        time.sleep(0.2)  # Intervalo entre movimientos (también corto para rapidez)  
 
 # Efecto de pantalla invertida  
 def upside_down_effect():  
     global mouse_moving  
-    # Esperar un momento antes de comenzar (simulando el efecto durante 20 segundos)  
-    root.attributes("-fullscreen", True)  # Pantalla completa  
+    # Crear una nueva ventana para el efecto  
+    full_screen_window = tk.Toplevel(root)  
+    full_screen_window.attributes("-fullscreen", True)  # Pantalla completa  
+    full_screen_window.wm_attributes("-topmost", True)  # Siempre encima  
+    full_screen_window.wm_attributes("-alpha", 0.7)  # Semi-transparente  
+
     time.sleep(20)  # Mantener la pantalla en modo completo por 20 segundos  
-    root.attributes("-fullscreen", False)  # Vuelve a la normalidad  
+    full_screen_window.destroy()  # Cerrar la ventana de pantalla completa  
     
     # Detener el movimiento del mouse después del efecto de "upside-down"  
     mouse_moving = False  
