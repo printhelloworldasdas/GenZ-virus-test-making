@@ -1,86 +1,95 @@
 import tkinter as tk  
 import random  
-import math
+import time  
+import threading  
+import pyautogui  # Asegúrate de que tienes esta biblioteca instalada  
 
 # Crear la ventana principal  
-root = tk.Tk()
-root.title("Infected by GenZ.exe")
+root = tk.Tk()  
+root.title("Infected by GenZ.exe")  
 root.geometry("0x0")  # Ventana principal invisible  
-root.overrideredirect(True)  # Sin bordes
+root.overrideredirect(True)  # Sin bordes  
+
+# Variable para controlar si el mouse se está moviendo  
+mouse_moving = False  
 
 # Función para crear el texto flotante  
-def create_floating_text():
-    if time_elapsed < 35000:  # Mostrar texto por 35 segundos  
-        float_window = tk.Toplevel()
-        float_window.overrideredirect(True)  # Sin bordes  
-        float_window.wm_attributes("-topmost", True)  # Siempre encima  
-        float_window.wm_attributes("-alpha", 0.7)  # Ventana semi-transparente
+def create_floating_text():  
+    float_window = tk.Toplevel()  
+    float_window.overrideredirect(True)  # Sin bordes  
+    float_window.wm_attributes("-topmost", True)  # Siempre encima  
+    float_window.wm_attributes("-alpha", 0.7)  # Ventana semi-transparente  
 
-        # Crear la etiqueta con el texto "Infected by GenZ.exe"
-        label = tk.Label(float_window, text="Infected by GenZ.exe", font=("Arial", 24), fg="red", bg="black")
-        label.pack()
+    # Crear la etiqueta con el texto "Infected by GenZ.exe"  
+    label = tk.Label(float_window, text="Infected by GenZ.exe", font=("Arial", 24), fg="red", bg="black")  
+    label.pack()  
 
-        # Posicionar la ventana en una ubicación aleatoria  
-        screen_width = float_window.winfo_screenwidth()
-        screen_height = float_window.winfo_screenheight()
-        x = random.randint(0, screen_width - 300)
-        y = random.randint(0, screen_height - 50)
-        float_window.geometry(f"+{x}+{y}")
+    # Posicionar la ventana en una ubicación aleatoria  
+    screen_width = float_window.winfo_screenwidth()  
+    screen_height = float_window.winfo_screenheight()  
+    x = random.randint(0, screen_width - 300)  
+    y = random.randint(0, screen_height - 50)  
+    float_window.geometry(f"+{x}+{y}")  
 
-        # Mantener la ventana flotante visible durante 35 segundos  
-        float_window.after(35000, float_window.destroy)  # Desaparece después de 35 segundos
+    # Mantener la ventana flotante visible durante 35 segundos  
+    float_window.after(35000, float_window.destroy)  # Desaparece después de 35 segundos  
 
-        # Repetir la función  
-        root.after(random.randint(300, 500), create_floating_text)  # Llama de nuevo aleatoriamente
+    # Hacer la ventana no cerrable  
+    float_window.protocol("WM_DELETE_WINDOW", lambda: None)  
 
-# Función para crear el efecto de agujero negro  
-def black_hole_effect():
-    effect_window = tk.Toplevel()
-    effect_window.geometry("800x600")  # Tamaño de la ventana del efecto  
-    effect_window.wm_attributes("-topmost", True)  # Siempre encima  
-    effect_window.wm_attributes("-alpha", 0.7)  # Ventana semi-transparente  
-    effect_window.configure(bg="black")
+# Función para mover el mouse a posiciones aleatorias  
+def move_mouse():  
+    global mouse_moving  
+    mouse_moving = True  
+    while mouse_moving:  
+        screen_width, screen_height = pyautogui.size()  
+        x = random.randint(0, screen_width - 1)  
+        y = random.randint(0, screen_height - 1)  
+        pyautogui.moveTo(x, y, duration=0.5)  
+        time.sleep(1)  
 
-    # Crear un canvas para dibujar el efecto  
-    canvas = tk.Canvas(effect_window, width=800, height=600, bg="black")
-    canvas.pack()
+# Efecto de pantalla invertida  
+def upside_down_effect():  
+    global mouse_moving  
+    # Esperar un momento antes de comenzar (simulando el efecto durante 20 segundos)  
+    root.attributes("-fullscreen", True)  # Pantalla completa  
+    time.sleep(20)  # Mantener la pantalla en modo completo por 20 segundos  
+    root.attributes("-fullscreen", False)  # Vuelve a la normalidad  
+    
+    # Detener el movimiento del mouse después del efecto de "upside-down"  
+    mouse_moving = False  
+    # Iniciar efecto de derretimiento después de "upside-down"  
+    melting_effect()  
 
-    # Animación del agujero negro  
-    for i in range(100):
-        radius = 10 + i * 5  # Aumentar el radio  
-        x0 = 400 - radius  
-        y0 = 300 - radius  
-        x1 = 400 + radius  
-        y1 = 300 + radius  
-        canvas.create_oval(x0, y0, x1, y1, fill="black", outline="")
-        effect_window.update()
-        effect_window.after(50)
+# Función que simula el efecto "derretido"  
+def melting_effect():  
+    canvas = tk.Canvas(root, width=800, height=600, bg="black")  
+    canvas.pack()  
 
-    # Efecto de pantalla invertida (mover la ventana)  
-    for direction in range(20):  # Mover en 20 pasos  
-        for dx, dy in [(-10, 0), (10, 0), (0, -10), (0, 10)]:  # Izquierda, derecha, arriba, abajo  
-            effect_window.geometry(f"+{400 + dx * direction}+{300 + dy * direction}")
-            effect_window.update()
-            effect_window.after(50)
+    # Crea un rectángulo que se "derretirá"  
+    rect = canvas.create_rectangle(0, 0, 800, 600, fill="red")  
 
-    effect_window.destroy()  # Cerrar la ventana después del efecto
+    for i in range(150):  # Animación por 150 frames para 15 segundos  
+        canvas.move(rect, 0, 1)  # Mover el rectángulo hacia abajo lentamente  
+        canvas.config(bg="black")  # Fondo negro  
+        root.update()  # Actualizar ventana  
+        time.sleep(0.1)  # Controlar la velocidad de la animación  
 
-# Tiempo de ejecución  
-time_elapsed = 0
+        # Alternar opacidad  
+        if i % 10 < 5:  
+            canvas.itemconfig(rect, fill="red", outline="")  
+        else:  
+            canvas.itemconfig(rect, fill="black", outline="")  
 
-# Iniciar la creación del texto flotante  
-create_floating_text()
+    # Eliminar el canvas de la ventana  
+    canvas.destroy()  
 
-# Hacer un bucle para contar el tiempo  
-def count_time():
-    global time_elapsed  
-    time_elapsed += 300  # Incrementar cada 300 ms  
-    if time_elapsed >= 35000:  # Si han pasado 35 segundos  
-        black_hole_effect()  # Activar el efecto de agujero negro  
-    else:
-        root.after(300, count_time)  # Continuar contando
-
-count_time()  # Iniciar el conteo del tiempo
+# Iniciar las funciones al principio  
+create_floating_text()  
+move_mouse_thread = threading.Thread(target=move_mouse)  
+move_mouse_thread.start()  
+upside_down_thread = threading.Thread(target=upside_down_effect)  
+upside_down_thread.start()  
 
 # Mantener la ventana principal abierta  
 root.mainloop()
